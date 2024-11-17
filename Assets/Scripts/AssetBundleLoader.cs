@@ -1,10 +1,8 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 #if UNITY_EDITOR
 using UnityEditor;
-using UnityEngine.SceneManagement;
 #endif
+using System.Collections;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class AssetBundleLoader : MonoBehaviour {
@@ -12,10 +10,20 @@ public class AssetBundleLoader : MonoBehaviour {
     private string bundleUrl = $"{Application.streamingAssetsPath}/test";
     private string sceneName = "test_stage";
     private AssetBundle bundle;
+
+    [SerializeField] private bool isApplyLoadURPSetting;
     
     private void Update() {
         if (Input.GetKeyDown(KeyCode.A)) {
             StartCoroutine(LoadSceneCoroutine());
+        }
+        
+        if (Input.GetKeyDown(KeyCode.S)) {
+            ApplyURPSettings();
+        }
+        
+        if (Input.GetKeyDown(KeyCode.D)) {
+            QualitySettings.renderPipeline = null;
         }
     }
     
@@ -53,6 +61,18 @@ public class AssetBundleLoader : MonoBehaviour {
         yield return loadOperation;
 
         Debug.Log($"Scene {sceneName} loaded Additively!");
+        
+        if (isApplyLoadURPSetting) ApplyURPSettings();
+    }
+
+    private void ApplyURPSettings() {
+        var urpAssetSettings = FindObjectOfType<URPAssetSetting>();
+        if (urpAssetSettings == null || urpAssetSettings.urpAsset == null) {
+            Debug.Log("URP Assetが見つかりませんでした");
+            return;
+        }
+        QualitySettings.renderPipeline = urpAssetSettings.urpAsset;
+        Debug.Log("Apply URP Settings");
     }
 
     private void OnDestroy() {

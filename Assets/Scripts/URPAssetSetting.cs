@@ -7,6 +7,10 @@ using UnityEditor;
 public class URPAssetSetting : MonoBehaviour {
     public UniversalRenderPipelineAsset urpAsset;
     public UniversalRendererData urpData;
+    
+    // private void Awake() {
+    //     QualitySettings.renderPipeline = urpAsset;
+    // }
 }
 
 #if UNITY_EDITOR
@@ -33,9 +37,11 @@ public class URPAssetSettingEditor : Editor {
         if (GUILayout.Button("New", GUILayout.Width(60))) {
             var defaultUrpAsset = Resources.Load<UniversalRenderPipelineAsset>("Default URP Asset");
             urpAssetSetting.urpAsset = Instantiate(defaultUrpAsset);
+            urpAssetSetting.urpAsset.name = $"{urpAssetSetting.gameObject.scene.name} URP Asset";
         
             var defaultUrpData = Resources.Load<UniversalRendererData>("Default URP Data");
             urpAssetSetting.urpData = Instantiate(defaultUrpData);
+            urpAssetSetting.urpData.name = $"{urpAssetSetting.gameObject.scene.name} URP Data";
             urpAssetSetting.urpAsset.SetRendererData(urpAssetSetting.urpData);
         }
         
